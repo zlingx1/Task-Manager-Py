@@ -3,8 +3,6 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from window import MainWindow
-
 import manager
 
 task_path:str = "Task.json"
@@ -14,9 +12,10 @@ def main():
 
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(lambda: manager.save_task(task_path))
-    win = MainWindow()
+    
+    manager.create_window()
 
-    win.show()
+    manager.window.show()
 
     sys.exit(app.exec())
 

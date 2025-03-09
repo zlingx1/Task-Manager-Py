@@ -1,8 +1,10 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QCheckBox, QLabel, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QCheckBox, QPushButton, QLabel, QSizePolicy
 
 from PyQt6.QtCore import Qt
 
 from data.taskdata import TaskData
+
+import manager
 
 class TaskPanel(QWidget):
     def __init__(self, data : TaskData):
@@ -20,7 +22,8 @@ class TaskPanel(QWidget):
         self.header_layout = QHBoxLayout()
         self.header_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        self.name_widget = QLabel(data.task_name)
+        self.name_widget = QPushButton(data.task_name)
+        self.name_widget.clicked.connect(lambda: manager.window.open_edit_task_page(self.task_data))
         self.name_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.header_layout.addWidget(self.name_widget)
 
@@ -34,13 +37,6 @@ class TaskPanel(QWidget):
         self.__create_attributes()
 
         self.setLayout(self.main_layout)
-        self.name_widget.setStyleSheet("""
-        background-color: black;
-        color: white;       
-        padding: 5px;      
-        border-radius: 5px; 
-        font-weight: bold;
-        """)
 
     def __create_attributes(self):
         for key, value in self.task_data.task_attributes.items():
@@ -56,7 +52,7 @@ class TaskPanel(QWidget):
         attribute_layout.addWidget(name_widget)
 
         name_widget.setStyleSheet("""
-        background-color: black;
+        background-color: gray;
         color: white;       
         padding: 2px;      
         border-radius: 5px; 
@@ -80,8 +76,4 @@ class TaskPanel(QWidget):
             widget.setChecked(self.task_data.task_status)
         
     def __attribute_checked(self, attribute, status):
-        self.task_data.task_attributes[attribute] = status
-
-
-
-        
+        self.task_data.task_attributes[attribute] = status        

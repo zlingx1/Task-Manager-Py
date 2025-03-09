@@ -10,31 +10,32 @@ from datetime import datetime
 
 import manager
 
-class NewTaskPage(QWidget):
-    def __init__(self):
+class EditTaskPage(QWidget):
+    def __init__(self, task_data : TaskData):
         super().__init__()
+        self.task_data : TaskData = task_data
 
         self.page_layout = QVBoxLayout()
 
         self.attributes = []
 
         self.title_field = QLineEdit()
-        self.title_field.setPlaceholderText('Task Title')
+        self.title_field.setText(self.task_data.task_name)
         self.title_field.setStyleSheet("font-size: 18px; padding: 6px;") 
         self.page_layout.addWidget(self.title_field)
 
         status_layout = QHBoxLayout()
 
         self.priority_combo = QComboBox()
-
         for priority in TaskPriorityType:
             self.priority_combo.addItem(priority.name)
+        self.priority_combo.setCurrentText(self.task_data.task_priority.name)
 
         status_layout.addWidget(self.priority_combo)
 
         self.status_date = QDateEdit()
         self.status_date.setCalendarPopup(True)
-        self.status_date.setDate(QDate.currentDate())
+        self.status_date.setDate(QDate(self.task_data.task_date.year, self.task_data.task_date.month, self.task_data.task_date.day))
 
         status_layout.addWidget(self.status_date)
 
@@ -51,10 +52,10 @@ class NewTaskPage(QWidget):
         self.page_layout.addWidget(attribute_area)
 
         add_attr_button = QPushButton("New Attribute")
-        add_attr_button.clicked.connect(self.__add_new_attribute)
+        add_attr_button.clicked.connect(lambda: self.__add_new_attribute())
         self.page_layout.addWidget(add_attr_button)
 
-        self.submit_button = QPushButton("Add Task")
+        self.submit_button = QPushButton("Update Task")
         self.submit_button.setStyleSheet("font-size: 18px; padding: 6px;") 
         self.submit_button.clicked.connect(self.submit_task)
 
@@ -66,21 +67,27 @@ class NewTaskPage(QWidget):
 
         self.setLayout(self.page_layout)
 
-    def __add_new_attribute(self):
+        for attribute in task_data.task_attributes:
+            self.__add_new_attribute(attribute)
+
+    def __add_new_attribute(self, text:str = ""):
         attribute_label = QLineEdit()
-        attribute_label.setPlaceholderText("Task Attribute")
+
+        if text == "":
+            attribute_label.setPlaceholderText(text)
+        else:
+            attribute_label.setText(text)
         
         self.attributes.append(attribute_label)
 
         self.attribute_layout.addWidget(attribute_label)
 
     def submit_task(self):
+        manager.tasks.remove(self.task_data)
+
         title = self.title_field.text()
         attributes = {label.text(): False for label in self.attributes}
         date = self.status_date.date().toPyDate()
-
-        if title == "" or manager.contains_task_name(title):
-            return
 
         task_data = TaskData(
             uuid.uuid4(),
@@ -91,15 +98,10 @@ class NewTaskPage(QWidget):
             attributes)
         
         manager.tasks.append(task_data)
-
-        self.title_field.setText("")
-        for attribute in self.attributes:
-            attribute.setParent(None)
-        self.attributes.clear()
+        
+        self.task_data = None
 
         manager.window.switch_page(0)
         manager.window.remove_page(self)
-        self.setParent(None)
-
-
         
+        self.setParent(None)

@@ -24,7 +24,7 @@ class TaskCategory(QVBoxLayout):
 
         title_label = QLabel(category_id)
         title_label.setStyleSheet("""
-        background-color: black;
+        background-color: #101010;
         color: white;    
         padding: 5px;      
         border-radius: 10px; 

@@ -1,8 +1,18 @@
 import json
 
 from data.taskdata import TaskData
+from window import MainWindow
 
 tasks = None
+window = None
+
+def create_window():
+    global window
+    window = MainWindow()
+
+def contains_task_name(name:str):
+    name_lower = name.lower()
+    return any(name_lower in task.task_name.lower() for task in tasks)
 
 def load_task(path):
     global tasks

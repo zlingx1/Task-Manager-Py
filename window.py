@@ -1,15 +1,14 @@
 from PyQt6.QtWidgets import QStackedWidget, QPushButton, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import Qt
 
-
 from pages.taskpage import TaskPage
 from pages.newtaskpage import NewTaskPage
 from pages.settingspage import SettingsPage
+from pages.edittaskpage import EditTaskPage
 
 class MainWindow():
     TASK_PAGE = 0
     SETTING_PAGE = 1
-    NEW_TASK_PAGE = 2
 
     def __init__(self):
 
@@ -18,10 +17,9 @@ class MainWindow():
         self.main_widget = QWidget()
         self.window.setCentralWidget(self.main_widget)
 
-        self.task_page = TaskPage(self)
+        self.task_page = TaskPage()
         self.settings_page = SettingsPage() 
-        self.new_task_page = NewTaskPage(self)
-
+        
         self.__create_window()
 
     def __create_nav_btn(self, title:str, handler):
@@ -60,7 +58,6 @@ class MainWindow():
 
         self.pages.addWidget(self.task_page)
         self.pages.addWidget(self.settings_page)
-        self.pages.addWidget(self.new_task_page)
         main_layout.addWidget(sidebar)
         main_layout.addWidget(self.pages, 1)
 
@@ -69,6 +66,19 @@ class MainWindow():
 
         if page_index == MainWindow.TASK_PAGE:
             self.task_page.update_categories()
+
+    def remove_page(self, page : QWidget):
+        self.pages.removeWidget(page)
+
+    def open_edit_task_page(self, task_data):
+        edit_page = EditTaskPage(task_data)
+        self.pages.addWidget(edit_page)
+        self.switch_page(self.pages.count() - 1)
+
+    def open_new_task_page(self):
+        new_task_page = NewTaskPage()
+        self.pages.addWidget(new_task_page)
+        self.switch_page(self.pages.count() - 1)
 
     def show(self):
         self.window.show()

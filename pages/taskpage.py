@@ -7,12 +7,12 @@ from data.taskprioritytype import TaskPriorityType
 
 from taskview.taskcategory import TaskCategory
 
+import manager
+
 class TaskPage(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self):
         super().__init__()
-
-        self.parent_window = parent
 
         self.sort_on = [TaskSortType.OVERDUE , TaskSortType.SCHEDULED , TaskSortType.TODAY]
         self.priority_on = [TaskPriorityType.NORMAL , TaskPriorityType.HIGH , TaskPriorityType.CRITICAL]
@@ -91,7 +91,7 @@ class TaskPage(QWidget):
         footer_layout = QHBoxLayout()
 
         new_task_button = QPushButton()
-        new_task_button.clicked.connect(lambda: self.parent_window.switch_page(2))
+        new_task_button.clicked.connect(lambda: manager.window.open_new_task_page())
         new_task_button.setText("New Task")
 
         footer_layout.addWidget(new_task_button)
