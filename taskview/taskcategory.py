@@ -53,13 +53,14 @@ class TaskCategory(QVBoxLayout):
 
         self.update_tasks()
 
-    def update_tasks(self):
+    def update_tasks(self, filter : str = ""):
         for index in reversed(range(self.task_layout.count())):
             widget = self.task_layout.itemAt(index).widget()
             self.task_layout.removeWidget(widget)
             widget.setParent(None)
-        
-        sorted_tasks = [task for task in manager.tasks if self.__filter_task(task)]
+
+        sorted_tasks = [task for task in manager.tasks if self.__filter_task(task, filter)]
+
         sorted_tasks = sorted(sorted_tasks, key=lambda task: task.task_priority.value)
 
         for task in sorted_tasks:
@@ -68,7 +69,12 @@ class TaskCategory(QVBoxLayout):
         if len(sorted_tasks) == 0:
             self.__toggle_view(False)
 
-    def __filter_task(self, task : TaskData) -> bool:
+    def __filter_task(self, task : TaskData, filter : str = "") -> bool:
+        task_name = task.task_name.lower()
+
+        if filter != "" and filter not in task_name:
+            return False
+
         today = datetime.now().date()
         due = task.task_date.date()
 

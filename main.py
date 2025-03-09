@@ -7,7 +7,6 @@ from window import MainWindow
 
 import manager
 
-
 task_path:str = "Task.json"
 
 def main():

@@ -42,14 +42,21 @@ class TaskPage(QWidget):
         self.__create_footer()
         
     def __create_header(self):
-        search_bar = QLineEdit()
-        search_bar.setPlaceholderText("Search")
+        self.search_bar = QLineEdit()
+        self.search_bar.setPlaceholderText("Search")
 
         search_icon = self.window().style().standardIcon(QStyle.StandardPixmap.SP_FileDialogContentsView)
         search_action = QAction(search_icon, "", self.header_layout)
-        search_bar.addAction(search_action, QLineEdit.ActionPosition.LeadingPosition)
+        self.search_bar.addAction(search_action, QLineEdit.ActionPosition.LeadingPosition)
+        self.header_layout.addWidget(self.search_bar)
 
-        self.header_layout.addWidget(search_bar)
+        self.search_bar.returnPressed.connect(self.__search)
+        search_action.triggered.connect(self.__search)
+
+    def __search(self):
+        self.today_category.update_tasks(self.search_bar.text())
+        self.overdue_category.update_tasks(self.search_bar.text())
+        self.scheduled_category.update_tasks(self.search_bar.text())
 
     def __create_sort_header(self):
         self.__create_sort_widget(TaskSortType.TODAY, "Today")
@@ -61,21 +68,22 @@ class TaskPage(QWidget):
         self.__create_priority_widget(TaskPriorityType.CRITICAL, "Critical")
 
     def __create_categories(self):
-        category_area = QScrollArea()
-        category_area.setWidgetResizable(True)
-        
         category_layout = QVBoxLayout()
         category_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        category_widget = QWidget()
+        category_widget.setLayout(category_layout)
+
+        category_area = QScrollArea()
+        category_area.setWidgetResizable(True)
+        category_area.setWidget(category_widget)
 
         self.today_category = TaskCategory(TaskSortType.TODAY.name, self)
         self.overdue_category = TaskCategory(TaskSortType.OVERDUE.name, self)
         self.scheduled_category = TaskCategory(TaskSortType.SCHEDULED.name, self)
-        
         category_layout.addLayout(self.today_category)
         category_layout.addLayout(self.overdue_category)
         category_layout.addLayout(self.scheduled_category)
-
-        category_area.setLayout(category_layout)
 
         self.page_layout.addWidget(category_area)
 
@@ -156,5 +164,3 @@ class TaskPage(QWidget):
         self.today_category.update_tasks()
         self.overdue_category.update_tasks()
         self.scheduled_category.update_tasks()
-            
-
