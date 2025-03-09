@@ -1,0 +1,137 @@
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QScrollArea, QPushButton, QLineEdit, QStyle
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QAction
+
+from data.tasksorttype import TaskSortType
+from data.taskprioritytype import TaskPriorityType
+
+from taskview.taskcategory import TaskCategory
+
+class TaskPage(QWidget):
+
+    def __init__(self, parent):
+        super().__init__()
+
+        self.parent_window = parent
+
+        self.sort_on = [TaskSortType.OVERDUE , TaskSortType.SCHEDULED , TaskSortType.TODAY]
+        self.priority_on = [TaskPriorityType.NORMAL , TaskPriorityType.HIGH , TaskPriorityType.CRITICAL]
+
+        self.sort_widgets = [None] * len(TaskSortType)
+        self.priority_widgets = [None] * len(TaskPriorityType)
+
+        self.page_layout = QVBoxLayout()
+        self.page_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.setLayout(self.page_layout)
+
+        self.header_layout = QHBoxLayout()
+        self.header_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.page_layout.addLayout(self.header_layout)
+        
+        self.first_content = QHBoxLayout()
+        self.first_content.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.second_content = QHBoxLayout()
+        self.second_content.setAlignment(Qt.AlignmentFlag.AlignTop)
+        
+        self.page_layout.addLayout(self.first_content)
+        self.page_layout.addLayout(self.second_content)
+
+        self.__create_header()
+        self.__create_sort_header()
+        self.__create_categories()
+        self.__create_footer()
+        
+    def __create_header(self):
+        search_bar = QLineEdit()
+        search_bar.setPlaceholderText("Search")
+
+        search_icon = self.window().style().standardIcon(QStyle.StandardPixmap.SP_FileDialogContentsView)
+        search_action = QAction(search_icon, "", self.header_layout)
+        search_bar.addAction(search_action, QLineEdit.ActionPosition.LeadingPosition)
+
+        self.header_layout.addWidget(search_bar)
+
+    def __create_sort_header(self):
+        self.__create_sort_widget(TaskSortType.TODAY, "Today")
+        self.__create_sort_widget(TaskSortType.OVERDUE, "Overdue")
+        self.__create_sort_widget(TaskSortType.SCHEDULED, "Scheduled")
+
+        self.__create_priority_widget(TaskPriorityType.NORMAL, "Normal")
+        self.__create_priority_widget(TaskPriorityType.HIGH, "High")
+        self.__create_priority_widget(TaskPriorityType.CRITICAL, "Critical")
+
+    def __create_categories(self):
+        category_area = QScrollArea()
+        category_area.setWidgetResizable(True)
+        
+        category_layout = QVBoxLayout()
+        category_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.today_category = TaskCategory(TaskSortType.TODAY.name)
+        self.overdue_category = TaskCategory(TaskSortType.OVERDUE.name)
+        self.scheduled_category = TaskCategory(TaskSortType.SCHEDULED.name)
+
+        category_layout.addLayout(self.today_category)
+        category_layout.addLayout(self.overdue_category)
+        category_layout.addLayout(self.scheduled_category)
+
+        category_area.setLayout(category_layout)
+
+        self.page_layout.addWidget(category_area)
+
+    def __create_footer(self):
+        footer_layout = QHBoxLayout()
+
+        new_task_button = QPushButton()
+        new_task_button.clicked.connect(lambda: self.parent_window.switch_page(2))
+        new_task_button.setText("New Task")
+
+        footer_layout.addWidget(new_task_button)
+        self.page_layout.addLayout(footer_layout)
+
+    def __create_sort_widget(self, sort_type : TaskSortType, name:str):
+        self.sort_widgets[sort_type.value] = QPushButton(name)
+        self.sort_widgets[sort_type.value].clicked.connect(lambda: self.__filter_sort_selected(sort_type))
+        self.sort_widgets[sort_type.value].setStyleSheet("""
+        background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+        stop:0 gray, stop:1 lightblue);
+        """)
+        self.first_content.addWidget(self.sort_widgets[sort_type.value])
+
+    def __create_priority_widget(self, sort_type : TaskPriorityType, name:str):
+        self.priority_widgets[sort_type.value] = QPushButton(name)
+        self.priority_widgets[sort_type.value].clicked.connect(lambda: self.__filter_priority_selected(sort_type))
+        self.priority_widgets[sort_type.value].setStyleSheet("""
+        background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+        stop:0 gray, stop:1 lightblue);
+        """)
+        self.second_content.addWidget(self.priority_widgets[sort_type.value])
+
+    def __filter_sort_selected(self, sort_type : TaskSortType):
+        if sort_type in self.sort_on:
+            self.sort_on.remove(sort_type)        
+            self.sort_widgets[sort_type.value].setStyleSheet("""
+            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+            stop:0 gray, stop:1 black);
+            """)
+        else:
+            self.sort_on.append(sort_type)        
+            self.sort_widgets[sort_type.value].setStyleSheet("""
+            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+            stop:0 gray, stop:1 lightblue);
+            """)
+
+    def __filter_priority_selected(self, sort_type : TaskPriorityType):
+        if sort_type in self.priority_on:
+            self.priority_on.remove(sort_type)        
+            self.priority_widgets[sort_type.value].setStyleSheet("""
+            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+            stop:0 gray, stop:1 black);
+            """)
+        else:
+            self.priority_on.append(sort_type)        
+            self.priority_widgets[sort_type.value].setStyleSheet("""
+            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+            stop:0 gray, stop:1 lightblue);
+            """)
+
