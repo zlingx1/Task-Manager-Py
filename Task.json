@@ -1,1 +1,9 @@
-[]
+[
+    "{\"task_id\": \"3a5d2d87-2d58-4276-bc2b-1cce9710b2a0\", \"task_name\": \"Work out\", \"task_priority\": 2, \"task_date\": \"2025-03-11T00:00:00\", \"task_status\": false, \"task_attributes\": {\"1.\": false, \"2.\": false, \"3.\": false}}",
+    "{\"task_id\": \"f6ce8a7c-8497-4085-8c1f-274f24e0fb0a\", \"task_name\": \"Cooking\", \"task_priority\": 2, \"task_date\": \"2025-03-09T00:00:00\", \"task_status\": false, \"task_attributes\": {\"Waffle\": false, \"Sausage\": false, \"Baccon\": false}}",
+    "{\"task_id\": \"acfefbf9-d498-4291-a903-d89e96c7f50f\", \"task_name\": \"Cleaning\", \"task_priority\": 2, \"task_date\": \"2025-03-09T00:00:00\", \"task_status\": false, \"task_attributes\": {\"Do dishes\": false, \"Vacuum\": false, \"Wash cloths\": false, \"Clean bed\": false}}",
+    "{\"task_id\": \"324d2d6a-f834-4222-820f-c0bb93664f89\", \"task_name\": \"Hang out with friends\", \"task_priority\": 1, \"task_date\": \"2025-03-11T00:00:00\", \"task_status\": false, \"task_attributes\": {\"Movies\": false, \"Dinner\": false, \"Drink\": false}}",
+    "{\"task_id\": \"c8544ce6-1a2b-4f75-bd9a-2bf8f8e91a9c\", \"task_name\": \"Walking Doggo\", \"task_priority\": 2, \"task_date\": \"2025-03-09T00:00:00\", \"task_status\": false, \"task_attributes\": {\"To the park\": false, \"To the neighbors\": false, \"Return home\": false}}",
+    "{\"task_id\": \"5712bd5d-6a96-45aa-b4dc-e0f593958371\", \"task_name\": \"Job application\", \"task_priority\": 0, \"task_date\": \"2025-03-09T00:00:00\", \"task_status\": false, \"task_attributes\": {\"Make indeed account\": false, \"Make linkedin account\": false, \"Apply to jobs\": false}}",
+    "{\"task_id\": \"4b636acc-8ce7-46ed-8bb1-edab80e61156\", \"task_name\": \"Create Task Management Application\", \"task_priority\": 2, \"task_date\": \"2025-03-20T00:00:00\", \"task_status\": false, \"task_attributes\": {\"Create Github Repository\": false, \"Create Project Outline\": false, \"Create Project\": false}}"
+]

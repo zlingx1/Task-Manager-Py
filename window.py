@@ -67,5 +67,8 @@ class MainWindow():
     def switch_page(self, page_index):
         self.pages.setCurrentIndex(page_index)
 
+        if page_index == MainWindow.TASK_PAGE:
+            self.task_page.update_categories()
+
     def show(self):
         self.window.show()

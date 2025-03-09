@@ -5,7 +5,7 @@ from datetime import datetime
 
 from data.taskprioritytype import TaskPriorityType
 from dataclasses import dataclass
-from typing import List
+from typing import Dict
 
 @dataclass
 class TaskData():
@@ -13,7 +13,8 @@ class TaskData():
     task_name : str
     task_priority : TaskPriorityType
     task_date : datetime
-    task_attributes : List[str]
+    task_status : bool
+    task_attributes : Dict[str, bool]
 
     # Convert to JSON
     def to_json(self) -> str:
@@ -22,6 +23,7 @@ class TaskData():
             "task_name": self.task_name,
             "task_priority": self.task_priority.value,  
             "task_date" : self.task_date.isoformat(),
+            "task_status" : self.task_status,
             "task_attributes" : self.task_attributes
         })
 
@@ -34,5 +36,6 @@ class TaskData():
             task_name=data["task_name"],
             task_priority=TaskPriorityType(data["task_priority"]),
             task_date=datetime.fromisoformat(data["task_date"]),
+            task_status=bool(data["task_status"]),
             task_attributes=data["task_attributes"]
         )

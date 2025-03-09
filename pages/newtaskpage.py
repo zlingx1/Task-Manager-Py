@@ -6,6 +6,8 @@ import uuid
 from data.taskprioritytype import TaskPriorityType
 from data.taskdata import TaskData
 
+from datetime import datetime
+
 import manager
 
 class NewTaskPage(QWidget):
@@ -75,16 +77,24 @@ class NewTaskPage(QWidget):
 
     def submit_task(self):
         title = self.title_field.text()
-        attributes = [label.text() for label in self.attributes]
+        attributes = {label.text(): False for label in self.attributes}
+        date = self.status_date.date().toPyDate()
 
         task_data = TaskData(
             uuid.uuid4(),
             title,
             TaskPriorityType[self.priority_combo.currentText()],
-            self.status_date.date().toPyDate(),
+            datetime(date.year, date.month, date.day),
+            False,
             attributes)
         
         manager.tasks.append(task_data)
+
+        self.title_field.setText("")
+        for attribute in self.attributes:
+            attribute.setParent(None)
+        self.attributes.clear()
+
         self.parent_window.switch_page(0)
 
 

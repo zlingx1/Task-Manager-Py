@@ -67,10 +67,10 @@ class TaskPage(QWidget):
         category_layout = QVBoxLayout()
         category_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.today_category = TaskCategory(TaskSortType.TODAY.name)
-        self.overdue_category = TaskCategory(TaskSortType.OVERDUE.name)
-        self.scheduled_category = TaskCategory(TaskSortType.SCHEDULED.name)
-
+        self.today_category = TaskCategory(TaskSortType.TODAY.name, self)
+        self.overdue_category = TaskCategory(TaskSortType.OVERDUE.name, self)
+        self.scheduled_category = TaskCategory(TaskSortType.SCHEDULED.name, self)
+        
         category_layout.addLayout(self.today_category)
         category_layout.addLayout(self.overdue_category)
         category_layout.addLayout(self.scheduled_category)
@@ -109,17 +109,14 @@ class TaskPage(QWidget):
 
     def __filter_sort_selected(self, sort_type : TaskSortType):
         if sort_type in self.sort_on:
-            self.sort_on.remove(sort_type)        
-            self.sort_widgets[sort_type.value].setStyleSheet("""
-            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
-            stop:0 gray, stop:1 black);
-            """)
+            self.disable_sort_type(sort_type)
         else:
-            self.sort_on.append(sort_type)        
-            self.sort_widgets[sort_type.value].setStyleSheet("""
-            background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
-            stop:0 gray, stop:1 lightblue);
-            """)
+            self.enable_sort_type(sort_type)
+            
+        match sort_type:
+            case TaskSortType.TODAY: self.today_category.set_expanded_state(sort_type in self.sort_on) 
+            case TaskSortType.OVERDUE: self.overdue_category.set_expanded_state(sort_type in self.sort_on)
+            case TaskSortType.SCHEDULED: self.scheduled_category.set_expanded_state(sort_type in self.sort_on)
 
     def __filter_priority_selected(self, sort_type : TaskPriorityType):
         if sort_type in self.priority_on:
@@ -134,4 +131,30 @@ class TaskPage(QWidget):
             background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
             stop:0 gray, stop:1 lightblue);
             """)
+
+    def disable_sort_type(self, sort_type : TaskSortType):
+        if sort_type not in self.sort_on:
+            return
+
+        self.sort_on.remove(sort_type)        
+        self.sort_widgets[sort_type.value].setStyleSheet("""
+        background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+        stop:0 gray, stop:1 black);
+        """)
+
+    def enable_sort_type(self, sort_type : TaskSortType):
+        if sort_type in self.sort_on:
+            return
+
+        self.sort_on.append(sort_type)        
+        self.sort_widgets[sort_type.value].setStyleSheet("""
+        background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+        stop:0 gray, stop:1 lightblue);
+        """)
+
+    def update_categories(self):
+        self.today_category.update_tasks()
+        self.overdue_category.update_tasks()
+        self.scheduled_category.update_tasks()
+            
 
